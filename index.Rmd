@@ -1,0 +1,223 @@
+---
+title: "Applied Econometrics with R"
+cover-image: "images/cover.png"
+author: "Bekah Selby, Ph.D."
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: 
+  bookdown::gitbook:
+    config:
+      toc:
+        collapse: subsection
+        scroll_highlight: yes
+      fontsettings:
+        theme: white
+        family: serif
+        size: 2
+    split_by: section+number
+    highlight: tango
+    includes:
+      in_header: [header_include.html]
+      before_body: open_review_block.html
+  bookdown::pdf_book:
+    pandoc_args: [ "--csl", "apa-old-doi-prefix.csl"]
+    includes:
+      in_header: preamble.tex
+    citation_package: natbib
+    keep_tex: yes
+always_allow_html: yes
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+biblatexoptions:
+  - sortcites
+link-citations: yes
+github-repo: "drbjselby/appliedeconometricswithR"
+description: "This book provides fundamental econometric theory and applications of econometrics using the R programming language. The objective of the text is to provide the practitioner practice for real-world policy and data analysis.  "
+url: 'TBD'
+tags: [Tutorial, Linear models, Econometrics, Causal Analysis, R Programming, Textbook]
+---
+
+# Preface {-}
+
+```{r, child="_setup.Rmd"}
+```
+
+```{r, eval=my_output == "html", results='asis', echo=FALSE}
+cat('<hr style="background-color:#bb8d0a;height:2px">')
+```
+
+<br> Department of Math and Economics <br> Emporia State University <br> Emporia, Kansas <br> <a href=\"mailto:rselby@emporia.edu?subject=Applied%20Econometrics%20with%20R\">rselby@emporia.edu</a> <br><br> `r sf <- lubridate::stamp_date('Last updated on Wednesday, January 19, 2022'); sf(Sys.Date())`
+<br>
+<br>
+
+<br>
+
+```{r, eval=knitr::opts_knit$get("rmarkdown.pandoc.to") == "html", results='asis', echo=FALSE}
+cat('<hr style="background-color:#bb8d0a;height:2px">')
+```
+
+#### Acknowledgements {-}
+This text is adapted and modified from "Introduction to Econometrics with R" by Christoph Hanck, Martin Arnold, Alexander Gerber, and Martin Schmelzer (2022) which is licensed under the Creative Commons Attribution-NonCommericial-ShareAlike 4.0 International License. 
+
+Copyright © 2022 Hanck, Arnold, Gerber, and Schmelzer 
+
+```{r, eval=knitr::opts_knit$get("rmarkdown.pandoc.to") == "html", results='asis', echo=FALSE}
+cat('<br>
+![Creative Commons License](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.eu.svg)
+
+This book is licensed under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](http://creativecommons.org/licenses/by-nc-sa/4.0/).')
+```
+
+#### About this book {-}
+
+Econometrics, like so many applied statistics courses, has evolved tremendously in modern times due to the prevalence, efficiency, and accessibility of data processing software and hardware. Increasingly, applied econometricians are learning tools of the trade used by programmers and data science. 
+
+At Emporia State University, we launched the Masters of Science in Informatics with a concentration in Quantitative Economics in 2018 to address the need for graduates who are trained researchers in economics but also have the practical expertise in data management, analysis, and manipulation. At the time of launch and the writing of this book, many data analysts and researchers need expertise in at least one programming language. 
+
+The core of the Informatics program is a rigorous two-semester course series in econometrics. At the time of writing this book, there were little to no open educational resources (OER) that provides both the level of econometric theory and practical application that is needed for our masters students. 
+
+This text builds upon and modifies the OER text "Introduction to Econometrics with R" by Hanck, Arnold, Gerber, and Schmelzer. Several areas have been added, modified, or eliminated to provide the content needed for the MS Informatics program. 
+
+#### Conventions Used in this Book {-}
+
++ *Italic* text indicates new terms, names, buttons and alike.
+
++ `r ttcode("Constant width text")` is generally used in paragraphs to refer to `r ttcode("R")` code. This includes commands, variables, functions, data types, databases and file names. 
+
++ <code>Constant width text on gray background</code> indicates `r ttcode("R")` code that can be typed literally by you. It may appear in paragraphs for better distinguishability among executable and non-executable code statements but it will mostly be encountered in shape of large blocks of `r ttcode("R")` code. These blocks are referred to as code chunks. 
+
+
+
+# Introduction
+
+```{r, eval=knitr::opts_knit$get("rmarkdown.pandoc.to") == "html", results='asis', echo=FALSE}
+cat('<hr style="background-color:#bb8d0a;height:2px">')
+```
+
+**Econometrics** is the science of combining economic theory, mathematics, and statistics to analyze and predict economic phenomena. Applied econometricians use real-world data to test economic theories, conduct policy analysis, and forecast. Modern applied econometrics also involves methods from data and computer science. 
+
+This textbook provides the young applied econometrician with the fundamental theory and practical application experience necessary in an increasingly competitive workforce. For the purposes of this text, we utilize the `r ttcode("R")` programming language: a powerful, open-access, and growing statistical analysis tool. Moreover, many employers are increasingly requesting new analysts to have experience with `r ttcode("R")` or similar programming languages. We also utilize RStudio as the integrated development environment (IDE) because it is availble at no-cost to students and is very user-friendly to new practitioners. 
+
+This book begins with a primer in `r ttcode("R")` programming and how to utilize RStudio. We then begin a review of probability theory and statistics necessary for econometric analysis. The next several chapters introduce and build upon regression analysis - the foundation of most econometric research. We then move into causal inference models, focusing our attention on a couple high-powered and widely-used estimation techniques. The book concludes with several chapters on time series analysis and forecasting techniques. 
+
+Each chapter includes sections on theory, examples of applications, and applied exercises. The exercises often utilize an interactive, embedded `r ttcode("R")`-script and console created by DataCamp; this allows students to practice coding directly in the digital version of the text. 
+
+## Colophon
+
+This book was build with:
+
+```{r, echo = FALSE}
+sessioninfo::session_info("itewrpkg")
+```
+
+## Basics of `r ttcode("R")` and *RStudio*
+
+#### `r ttcode("R")` Basics {-}
+
+This book is not intended to be an introduction to `r ttcode("R")` but a guide on how to use its capabilities for applications commonly encountered in  applied econometrics. This section will summarize the basic functions of this language; throughout the remaining text, you will be exposed to more advanced use of  `r ttcode("R")`. Those having basic knowledge in `r ttcode("R")` programming may feel comfortable starting with Chapter \@ref(pt). 
+
+This section, however, is meant for those who have not worked with `r ttcode("R")` or *RStudio* before. If you at least know how to create objects and call functions, you can skip it. If you would like to refresh your skills or get a feeling for how to work with *RStudio*, keep reading.
+
+If you would like a more in-depth introduction to `r ttcode("R")` and RStudio, there are several reputable online resources. Here is a brief list: 
+
+  - DataCamp: "Introduction to R" [LINK](https://bit.ly/346wAev)
+  - SkillUp: "R Programming for Beginners" [LINK](https://www.simplilearn.com/r-programming-free-course-skillup)
+  - EdX: Various courses [LINK](https://www.edx.org/learn/r-programming)
+    
+
+#### Downloading `r ttcode("R")` and RStudio {-}
+
+The first step is to download and install `r ttcode("R")` and RStudio on your computer. If you are working on a computer provided by your employer, you may need to contact your IT department before continuing. 
+
+In order to use RStudio to analyze `r ttcode("R")` code, you need to download the raw programming language as well as the RStudio integrated development environment (IDE). 
+
+  - Download R: You will want to download the most recent version of `r ttcode("R")` to your computer. To do this is to go to [The R-Project](https://www.r-project.org/) and find the appropriate version for your machine. For your convenience, we have included links to download the  [Windows Version](https://cran.r-project.org/bin/windows/base/) and the [Mac Version](https://cran.r-project.org/bin/macosx/). See [this page](https://www.datacamp.com/community/tutorials/installing-R-windows-mac-ubuntu) for a more detailed description of how to download `r ttcode("R")` onto your machine. 
+  - Download RStudio: To download RStudio, go to [rstudio.com](https://www.rstudio.com/products/rstudio/download/) and click to download the appropriate version for your computer. We recommend RStudio Desktop for all econometrics students. It is free and includes all the tools we will use throughout this textbook.  
+
+#### The Layout of *Rstudio* {-}
+
+```{r, fig.align='center', echo=FALSE, fig.cap="RStudio: the four panes"}
+knitr::include_graphics('images/rstudio.jpg')
+```
+
+*RStudio* is divided into four "panes" or work regions. In the above figure, you will see where these panes are located on the screen. 
+
+Pane 1 is called the "Source Editor". This pane may not immediately be visible when first starting *RStudio*. This region is where you will write code in large chunks and run it all at once. You will also be able to see some data, work with other programming languages, and do various other tasks in this space.
+
+Pane 2 is the "Environment" pane. This is where you will be able to see all of the objects that you have created and saved into 
+`r ttcode("R")`'s memory. You may see various other tabs, such as "History", "connections", and "Tutorial". 
+
+Pane 3 is the "Files" pane. This is where you will be able to see and access files on your computer. You will also be able to see graphical output under the "Plots" tab and also learn more about installed packages under the "Packages" and "Help" tabs. 
+
+Pane 4 is the "Console" pane. This is where you can directly communicate to `r ttcode("R")` and make your requests. The source editor will send requests to the console for computation. Code run in the console is not saved for future use (however you can find past computations under the "History" tab in the environment pane). 
+
+#### Your First Code {-}
+
+First of all, start *RStudio*. We will start by working in the console pane. 
+
+In the console, type
+
+```{r, eval = F}
+1 + 1
+```
+
+and press the enter key on your keyboard. By doing so, your line of code is read by `r ttcode("R")` and the result of this operation should be displayed right underneath it. In this case, `r ttcode("R")` works just like a calculator. You can do all arithmetic calculations by using the corresponding operator (`r ttcode("+")`, `r ttcode("-")`, `r ttcode("*")`, `r ttcode("/")` or `r ttcode("^")`). If you are not sure what the last operator does, try it out and check the results.
+
+#### Variables {-}
+
+`r ttcode("R")` is of course more sophisticated than that. We can work with variables or, more generally, objects. Objects are defined by using the assignment operator `r ttcode("<-")`. To create a variable named `r ttcode("x")` which contains the value `r ttcode("10")`, type `x <- 10` and press enter. The new variable should have appeared in the "environment" pane on the top right. The console, however, did not show any results; this is because our line of code did not contain any requests to show output. Put simply, all you asked `r ttcode("R")` to do was to remember the number 10 and associate it with the name `x`. When you now type `x` in the console and hit return, you ask `r ttcode("R")` to show you the value of `r ttcode("x")` and the corresponding value should be printed in the console.
+
+#### Vectors {-}
+
+`r ttcode("x")` is a scalar, a vector of length $1$. You can easily create longer vectors by using the function `r ttcode("c()")` (*c* is for "concatenate" or "combine"). To create a vector `r ttcode("y")` containing the numbers $1$ to $5$ and print it, do the following.
+
+```{r, eval = T}
+y <- c(1, 2, 3, 4, 5)
+y
+```
+
+You can also create a vector of letters or words (called "characters"). For now just remember that characters have to be surrounded by quotes, else they will be understood as object names.
+
+```{r, eval = F}
+hello <- c("Hello", "World")
+```
+
+Here we have created a vector of length 2 containing the words `r ttcode("Hello")` and `r ttcode("World")`. Type `hello` into the console to see the output. 
+
+
+#### Functions {-}
+
+You have seen the function `r ttcode("c()")` that can be used to combine objects. A **function** is a pre-programmed series of code the conducts a very specific task. In general, all function calls look the same: a function name is always followed by round parentheses. Sometimes, the parentheses include arguments. **Arguments** are pieces of information used by the function to perform the calculations.
+
+Here are two simple examples.
+
+```{r, eval = T}
+# generate the vector `z`
+z <- seq(from = 1, to = 5, by = 1)
+
+# compute the mean of the enries in `z`
+mean(z)
+```
+
+In the first line we use a function called `r ttcode("seq()")` to create the exact same vector as we did in the previous section, calling it `r ttcode("z")`. The function takes on the arguments `r ttcode("from")`, `r ttcode("to")` and `r ttcode("by")`.
+The function `r ttcode("mean()")` computes the arithmetic mean of its argument `r ttcode("x")`. Since we pass the vector `r ttcode("z")` as the argument `r ttcode("x")`, the result is `r ttcode("3")`!
+
+#### Documentation {-}
+
+If you are not sure which arguments a function expects, you may consult the function's documentation. **Documentation** is a detailed description of the data, function, or other `r ttcode("R")` package contents.  
+
+There are several ways to access the documentation. The easiest is using the `?` operator. Let's say we are not sure how the arguments required for `r ttcode("seq()")` work. We then type `?seq` in the console. By hitting return the documentation page for that function pops up in the lower right pane of *RStudio*. In there, the section "Arguments" holds the information we seek. 
+
+On the bottom of almost every help page you find examples on how to use the corresponding functions. This is very helpful for beginners and we recommend to look out for those.
+
+#### Interactive Widgets {-}
+Of course, all of the commands presented above also work in interactive widgets throughout the book. You may try them below.
+
+```{r, echo=FALSE, results='asis'}
+write_html(playground = T)
+```
+
+
+
+
